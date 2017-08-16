@@ -22,7 +22,7 @@ QCron(const QString & pattern)
 {
     _init();
     _parsePattern(pattern);
-    _checkState();
+    _checkState(true);
 }
 
 /******************************************************************************/
@@ -52,14 +52,16 @@ _init()
 
 void
 QCron::
-_checkState()
+_checkState(bool firstRun)
 {
     int interval_ms = 0;
-    if (match(QDateTime::currentDateTime()))
+    QDateTime currentDateTime = QDateTime::currentDateTime();
+
+    if (match(currentDateTime))
     {
         emit activated();
         _is_active = true;
-        interval_ms = 1000 * 60; // one minute
+        interval_ms = 1000 * (60 - (firstRun ? currentDateTime.time().second() : 0)); // miliseconds to the next minute
     }
     else
     {
@@ -68,7 +70,7 @@ _checkState()
             emit deactivated();
             _is_active = false;
         }
-        interval_ms = QDateTime::currentDateTime().secsTo(next()) * 1000;
+        interval_ms = (currentDateTime.secsTo(next()) - (firstRun ? currentDateTime.time().second() : 0)) * 1000;
     }
     QTimer::singleShot(interval_ms,
                        Qt::VeryCoarseTimer,

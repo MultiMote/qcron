@@ -48,7 +48,7 @@ private:
     void _process(QDateTime & dt, EField field);
 
 private slots:
-    void _checkState();
+    void _checkState(bool firstRun = false);
 };
 
 #endif
