@@ -54,6 +54,9 @@ void
 QCron::
 _checkState(bool firstRun)
 {
+    if(!_is_valid)
+        return;
+
     int interval_ms = 0;
     QDateTime currentDateTime = QDateTime::currentDateTime();
 
@@ -181,6 +184,7 @@ add(QDateTime & dt, EField field, int value)
         _fields[field].reset(dt);
     }
 }
+
 
 /******************************************************************************/
 
